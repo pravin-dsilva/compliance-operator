@@ -1,1 +1,1 @@
-FROM quay.io/complianceascode/ocp4:latest
+FROM quay.io/pravin_dsilva/ocp4:latest
