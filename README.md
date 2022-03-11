@@ -380,10 +380,10 @@ including advanced topics such as content building.
 ## Must-gather support
 
 An `oc adm must-gather` image for collecting operator information for debugging
-or support is available at `quay.io/compliance-operator/must-gather:latest`:
+or support is available at `quay.io/pravin_dsilva/must-gather:latest`:
 
 ```
-$ oc adm must-gather --image=quay.io/compliance-operator/must-gather:latest
+$ oc adm must-gather --image=quay.io/pravin_dsilva/must-gather:latest
 ```
 
 ## Metrics

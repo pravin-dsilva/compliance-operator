@@ -5,7 +5,7 @@ RELATED_IMAGE_OPENSCAP_NAME=openscap-ocp
 
 # Container image variables
 # =========================
-IMAGE_REPO?=quay.io/compliance-operator
+IMAGE_REPO?=quay.io/pravin_dsilva
 
 # Detect the OS to set per-OS defaults
 OS_NAME=$(shell uname -s)
@@ -110,17 +110,17 @@ E2E_SKIP_CONTAINER_BUILD?=false
 E2E_GO_TEST_FLAGS?=-test.v -test.timeout 120m
 
 # Specifies the image path to use for the content in the tests
-DEFAULT_CONTENT_IMAGE_PATH=quay.io/complianceascode/ocp4:latest
-E2E_CONTENT_IMAGE_PATH?=quay.io/complianceascode/ocp4:latest
+DEFAULT_CONTENT_IMAGE_PATH=quay.io/pravin_dsilva/ocp4:latest
+E2E_CONTENT_IMAGE_PATH?=quay.io/pravin_dsilva/ocp4:latest
 # We specifically omit the tag here since we only use this for testing.
-E2E_BROKEN_CONTENT_IMAGE_PATH?=quay.io/compliance-operator/test-broken-content:latest
+E2E_BROKEN_CONTENT_IMAGE_PATH?=quay.io/pravin_dsilva/test-broken-content:latest
 
 QUAY_NAMESPACE=compliance-operator
 OPERATOR_VERSION?=
 PREVIOUS_OPERATOR_VERSION=$(shell grep -E "\s+version: [0-9]+.[0-9]+.[0-9]+" deploy/olm-catalog/compliance-operator/manifests/compliance-operator.clusterserviceversion.yaml | sed 's/.*version: //')
 PACKAGE_CHANNEL?=alpha
 
-MUST_GATHER_IMAGE_PATH?=quay.io/compliance-operator/must-gather
+MUST_GATHER_IMAGE_PATH?=quay.io/pravin_dsilva/must-gather
 MUST_GATHER_IMAGE_TAG?=latest
 
 .PHONY: all
@@ -156,7 +156,7 @@ test-bundle-image:
 
 .PHONY: index-image
 index-image: opm
-	$(GOPATH)/bin/opm index add -b $(BUNDLE_IMAGE_PATH):$(BUNDLE_IMAGE_TAG) -f $(INDEX_IMAGE_PATH):$(INDEX_IMAGE_TAG) -t $(INDEX_IMAGE_PATH):$(INDEX_IMAGE_TAG) -c $(RUNTIME) --overwrite-latest
+	$(GOPATH)/bin/opm index add -b $(BUNDLE_IMAGE_PATH):$(BUNDLE_IMAGE_TAG)  -t $(INDEX_IMAGE_PATH):$(INDEX_IMAGE_TAG) -c $(RUNTIME) --overwrite-latest
 
 .PHONY: test-index-image
 test-index-image: opm test-bundle-image push-test-bundle
@@ -190,10 +190,10 @@ bundle-image-to-cluster: openshift-user bundle-image
 test-catalog: index-image-to-cluster
 	@echo "WARNING: This will temporarily modify deploy/olm-catalog/catalog-source.yaml"
 	@echo "Replacing image reference in deploy/olm-catalog/catalog-source.yaml"
-	@$(SED) 's%quay.io/compliance-operator/compliance-operator-index:latest%$(LOCAL_INDEX_IMAGE_PATH)%' deploy/olm-catalog/catalog-source.yaml
+	@$(SED) 's%quay.io/pravin_dsilva/compliance-operator-index:latest%$(LOCAL_INDEX_IMAGE_PATH)%' deploy/olm-catalog/catalog-source.yaml
 	@oc apply -f deploy/olm-catalog/catalog-source.yaml
 	@echo "Restoring image reference in deploy/olm-catalog/catalog-source.yaml"
-	@$(SED) 's%$(LOCAL_INDEX_IMAGE_PATH)%quay.io/compliance-operator/compliance-operator-index:latest%' deploy/olm-catalog/catalog-source.yaml
+	@$(SED) 's%$(LOCAL_INDEX_IMAGE_PATH)%quay.io/pravin_dsilva/compliance-operator-index:latest%' deploy/olm-catalog/catalog-source.yaml
 	@oc apply -f deploy/olm-catalog/operator-group.yaml
 	@oc apply -f deploy/olm-catalog/subscription.yaml
 
